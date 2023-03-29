@@ -1,0 +1,654 @@
+<span class="titparr ">TABLA ZF DPA NACIONAL</span>
+<style>
+    #tipotramite{
+        background:white;
+        display: block;
+        color:black;
+        height: 30px;
+        size: 30px;
+        width: 300px;
+        margin-left: 18px;
+    }
+    #tipotramite:hover {
+        background: #f7f7f7;
+        box-shadow: 2px ,2px,2px  black;
+    }
+    #selectclasificacion{
+        background:white;
+        display: block;
+        color:black;
+        height: 30px;
+        size: 30px;
+        width: 300px;
+        margin-left: 18px;
+    }
+    #selectclasificacion:hover {
+        background: #f7f7f7;
+        box-shadow: 2px ,2px,2px  black;
+    }
+</style>
+<script>
+    var datosTabla = [];
+    var nombre_nac = $("input[name='grado_a_t']"); // nombre_nac
+    var volumen_nac = $("input[name='Cantidad']"); //direccion
+    var monto_nac = $("input[name='nom_pro']");
+    var productosElegidos = "";
+    var itemEditable = "";
+    var rowNumber=0;
+    ponernull();
+    window.onload = function ()
+    {
+        $(".control-label").each(function(){
+            ltxt=$(this).html();
+            der=ltxt.substring(ltxt.length-10);
+            if(der=='(Opcional)'){
+                $(this).html(ltxt.substring(0,ltxt.length-10));
+            }
+        });
+        if ($("i:contains('edit')").length == 0)
+            {
+                $("[name='datos_tabla2']").parent().prop("id","iddatos_tabla2");
+                $('#iddatos_tabla2').parent().prop("hidden",true);
+            }
+
+        if(document.getElementsByName("datos_tabla2")[0].value != "")
+        {
+            if(document.getElementsByName("datos_tabla2")[0].value[0]=="'")
+            {
+                datosTabla = JSON.parse((document.getElementsByName("datos_tabla2")[0].value).slice(1,-1));
+            }else
+            {
+                datosTabla = JSON.parse($("input[name='datos_tabla2']")[0].value);
+            }
+        }
+        if(datosTabla.length>0)
+        {
+            generarTabla();
+        }else
+        {
+            if ($("i:contains('edit')").length == 0)
+            {
+                $("#tituloEstablecimientos").prop("hidden",true);
+                $("#establecimientos").prop("hidden",true);
+            }
+        }
+    }
+
+ $("#tipotramite").append(
+        "<option value=\"Seleccione una opción\" id=\"optionSelect\" >Seleccione una opción</option>",
+    "<option value=\"Primera vez\" id=\"PV\">Primera vez</option>",
+    "<option value=\"Renovación\" id=\"R\">Renovación</option>");
+
+
+    $("#selectclasificacion").append(
+    "<option value=\"Seleccione una opción\" id=\"optionSelect\" >Seleccione una opción</option>",
+    "<option value=\"Potable\" id=\"AF\">Potable</option>",
+    "<option value=\"No Potable\" id=\"AL\">No Potable</option>"
+    );
+
+  $("#selectestado").append(
+    "<option value=\"Seleccione una opción\" id=\"optionSelect\" >Seleccione una opción</option>",
+    "<option value=\"Liquido\" id=\"AF\">Liquido</option>",
+    "<option value=\"Solido\" id=\"AL\">Solido</option>"
+    );
+
+
+  $("#selectmedida").append(
+    "<option value=\"Seleccione una opción\" id=\"optionSelect\" >Seleccione una opción</option>",
+    "<option value=\"Kilos\" id=\"AF\">Kilos</option>",
+    "<option value=\"Litros\" id=\"AL\">Litros</option>"
+    );
+
+
+
+  $("#selecttipoempresa").append(
+    "<option value=\"Seleccione una opción\" id=\"optionSelect\" >Seleccione una opción</option>",
+    "<option value=\"Nacional\" id=\"1\">Nacional</option>",
+    "<option value=\"Extranjera\" id=\"2\">Extranjera</option>"
+    );
+
+
+
+
+
+
+
+$("#selectactividad").append(
+  "<option value=\"Seleccione una opción\" id=\"optionSelect\" >Seleccione una opción</option>",
+  "<option value=\"FABRICANTE DE ALCOHOL\" id=\"1\">FABRICANTE DE ALCOHOL</option>",
+  "<option value=\"IMPORTADOR DE ALCOHOL\" id=\"2\">IMPORTADOR DE ALCOHOL</option>",
+  "<option value=\"COMPRA LOCAL DE ALCOHOL\" id=\"3\">COMPRA LOCAL DE ALCOHOL</option>",
+  "<option value=\"FABRICANTE DE BEBIDAS ALCOHÓLICAS\" id=\"4\">FABRICANTE DE BEBIDAS ALCOHÓLICAS</option>",
+  "<option value=\"IMPORTADOR DE BEBIDAS ALCOHÓLICAS\" id=\"5\">IMPORTADOR DE BEBIDAS ALCOHÓLICAS</option>",
+  "<option value=\"DISTRIBUIDOR DE BEBIDAS ALCOHÓLICAS\" id=\"6\">DISTRIBUIDOR DE BEBIDAS ALCOHÓLICAS</option>",
+  "<option value=\"DETALLISTA O EXPENDEDOR DE BEBIDAS ALCOHÓLICAS\" id=\"7\">DETALLISTA O EXPENDEDOR DE BEBIDAS ALCOHÓLICAS</option>",
+  "<option value=\"COMERCIALIZACIÓN DE ALCOHOL (DISTRIBUIDOR O DETALLISTA)\" id=\"8\">COMERCIALIZACIÓN DE ALCOHOL (DISTRIBUIDOR O DETALLISTA)</option>",
+  "<option value=\"EMPRESA INDUSTRIAL USUARIA DE ALCOHOL\" id=\"9\">EMPRESA INDUSTRIAL USUARIA DE ALCOHOL</option>",
+  "<option value=\"DROGUERÍAS\" id=\"10\">DROGUERÍAS</option>",
+  "<option value=\"FARMACIAS\" id=\"11\">FARMACIAS</option>",
+  "<option value=\"LABORATORIOS DE PRODUCTOS FARMACÉUTICOS (LF)\" id=\"12\">LABORATORIOS DE PRODUCTOS FARMACÉUTICOS (LF)</option>",
+  "<option value=\"LABORATORIO DE ANÁLISIS (LA)\" id=\"13\">LABORATORIO DE ANÁLISIS (LA)</option>",
+  "<option value=\"LABORATORIO CLÍNICO PATOLÓGICO (LP)\" id=\"14\">LABORATORIO CLÍNICO PATOLÓGICO (LP)</option>",
+  "<option value=\"LABORATORIO DE PRODUCTOS COSMÉTICOS (LC)\" id=\"15\">LABORATORIO DE PRODUCTOS COSMÉTICOS (LC)</option>",
+  "<option value=\"LABORATORIO DE PRODUCTOS USO ANIMAL (LV)\" id=\"16\">LABORATORIO DE PRODUCTOS USO ANIMAL (LV)</option>",
+  "<option value=\"VENTA DE INSUMOS MÉDICOS\" id=\"17\">VENTA DE INSUMOS MÉDICOS</option>",
+  "<option value=\"CLÍNICAS MÉDICAS (CM)\" id=\"18\">CLÍNICAS MÉDICAS (CM)</option>",
+  "<option value=\"OTROS\" id=\"19\">OTROS</option>"
+);
+
+
+
+
+
+$("#selectactuso").append(
+  "<option value=\"Seleccione una opción\" id=\"optionSelect\" >Seleccione una opción</option>",
+  "<option value=\"IMPORTACIÓN\" id=\"1\">IMPORTACIÓN</option>",
+  "<option value=\"COMERCIALIZACIÓN\" id=\"2\">COMERCIALIZACIÓN</option>",
+  "<option value=\"FABRICACIÓN\" id=\"3\">FABRICACIÓN</option>",
+  "<option value=\"FABRICACIÓN DE BEBIDAS ALCOHÓLICAS\" id=\"4\">FABRICACIÓN DE BEBIDAS ALCOHÓLICAS</option>",
+  "<option value=\"COMPRA LOCAL\" id=\"5\">COMPRA LOCAL</option>",
+  "<option value=\"INDUSTRIAL\" id=\"6\">INDUSTRIAL</option>",
+  "<option value=\"LABORATORIO\" id=\"7\">LABORATORIO</option>",
+  "<option value=\"FARMACÉUTICO\" id=\"8\">FARMACÉUTICO</option>"
+);
+
+
+
+
+$("#selectipo").append(
+  "<option value=\"Seleccione una opción\" id=\"optionSelect\" >Seleccione una opción</option>",
+   "<option value=\"1 OCTANOL\" id=\"1\">1 OCTANOL</option>",
+  "<option value=\"1 PROPANOL SECADO\" id=\"2\">1 PROPANOL SECADO</option>",
+  "<option value=\"1-BUTANOL\" id=\"3\">1-BUTANOL</option>",
+  "<option value=\"1-BUTANOL EMPLURA\" id=\"4\">1-BUTANOL EMPLURA</option>",
+  "<option value=\"1-BUTANOL P.A\" id=\"5\">1-BUTANOL P.A</option>",
+  "<option value=\"1-BUTANOL PARA CROMATOGRAFIA\" id=\"6\">1-BUTANOL PARA CROMATOGRAFIA</option>",
+  "<option value=\"1-BUTILICO P.A\" id=\"7\">1-BUTILICO P.A</option>",
+  "<option value=\"1-METOXI-2-PROPANOL\" id=\"8\">1-METOXI-2-PROPANOL</option>",
+  "<option value=\"1-METOXI-2-PROPANOL\" id=\"9\">1-METOXI-2-PROPANOL</option>",
+  "<option value=\"1-METOXI-2-PROPANOL P.A.\" id=\"10\">1-METOXI-2-PROPANOL P.A.</option>",
+  "<option value=\"1-OCTANOL P.S\" id=\"11\">1-OCTANOL P.S</option>",
+  "<option value=\"1-PENTANOL\" id=\"12\">1-PENTANOL</option>",
+  "<option value=\"1-PROPANOL\" id=\"13\">1-PROPANOL</option>",
+  "<option value=\"1-PROPANOL MATERIAL DE REFERENCIA\" id=\"14\">1-PROPANOL MATERIAL DE REFERENCIA</option>",
+  "<option value=\"1-PROPANOL PARA ANALISIS ACS\" id=\"15\">1-PROPANOL PARA ANALISIS ACS</option>",
+  "<option value=\"1-PROPANOL PARA CROMATOGRAFIA\" id=\"16\">1-PROPANOL PARA CROMATOGRAFIA</option>",
+  "<option value=\"1.1.1 TRICLORO 2-PROPANOL\" id=\"17\">1.1.1 TRICLORO 2-PROPANOL</option>",
+  "<option value=\"1.1.1TRICLORO-2METIL-2PROPANOL\" id=\"18\">1.1.1TRICLORO-2METIL-2PROPANOL</option>",
+  "<option value=\"2-BUTANOL\" id=\"19\">2-BUTANOL</option>",
+  "<option value=\"2-BUTANOL P.A\" id=\"20\">2-BUTANOL P.A</option>",
+  "<option value=\"2-ETOXIETANOL\" id=\"21\">2-ETOXIETANOL</option>",
+  "<option value=\"2-FENILETANOL\" id=\"22\">2-FENILETANOL</option>",
+  "<option value=\"2-FINELITANOL PARA SINTESIS\" id=\"23\">2-FINELITANOL PARA SINTESIS</option>",
+  "<option value=\"2-HIDROXIBENCILICO\" id=\"24\">2-HIDROXIBENCILICO</option>",
+  "<option value=\"2-HIDROXIBENCILICO P.S\" id=\"25\">2-HIDROXIBENCILICO P.S</option>",
+  "<option value=\"2-METHYL1-PROPANOL\" id=\"26\">2-METHYL1-PROPANOL</option>",
+  "<option value=\"2-METILBUTILICO\" id=\"27\">2-METILBUTILICO</option>",
+  "<option value=\"28\" id=\"28\">2-PROPANOL</option>",
+  "<option value=\"2-PROPANOL\" id=\"29\">2-PROPANOL GRADIENT</option>",
+  "<option value=\"2-PROPANOL P.A\" id=\"30.1\">2-PROPANOL P.A</option>",
+  "<option value=\"2-PROPANOL P.AACS. ISO\" id=\"30\">2-PROPANOL P.AACS. ISO</option>",
+  "<option value=\"2-PROPANOL PARA CROMATOGRAFIA\" id=\"31\">2-PROPANOL PARA CROMATOGRAFIA</option>",
+  "<option value=\"2-PROPANOL SECADO\" id=\"32\">2-PROPANOL SECADO</option>",
+  "<option value=\"2,2,2,TRICLOROETANOL PARASINTESIS\" id=\"33\">2,2,2,TRICLOROETANOL PARASINTESIS</option>",
+  "<option value=\"AMILICO\" id=\"34\">AMILICO</option>",
+  "<option value=\"AMILICO AR\" id=\"35\">AMILICO AR</option>",
+  "<option value=\"BENCILICO ACS\" id=\"36\">BENCILICO ACS</option>",
+  "<option value=\"ISOPROPILICO USP\" id=\"37\">ISOPROPILICO USP</option>",
+  "<option value=\"LAURILICO ETOXILADO 7 MOLES\" id=\"38\">LAURILICO ETOXILADO 7 MOLES</option>",
+  "<option value=\"METANOL\" id=\"39\">METANOL</option>",
+  "<option value=\"METANOL ACS\" id=\"40\">METANOL ACS</option>",
+  "<option value=\"METANOL ANHIDRO\" id=\"41\">METANOL ANHIDRO</option>",
+  "<option value=\"METANOL EN AGUA\" id=\"42\">METANOL EN AGUA</option>",
+  "<option value=\"METANOL EN AGUA MATERIAL\" id=\"43\">METANOL EN AGUA MATERIAL</option>",
+  "<option value=\"METANOL GRADIENT\" id=\"44\">METANOL GRADIENT</option>",
+  "<option value=\"METANOL GRADO REACTIVO\" id=\"45\">METANOL GRADO REACTIVO</option>",
+  "<option value=\"METANOL HPLC\" id=\"46\">METANOL HPLC</option>",
+  "<option value=\"METANOL HPLC GRADIENTE\" id=\"47\">METANOL HPLC GRADIENTE</option>",
+  "<option value=\"METANOL P.A\" id=\"48\">METANOL P.A</option>",
+  "<option value=\"METANOL P.AACS, ISO\" id=\"49\">METANOL P.AACS, ISO</option>",
+  "<option value=\"METANOL PARA CROMATOFRAFIA DE GASES\" id=\"50\">METANOL PARA CROMATOFRAFIA DE GASES</option>",
+  "<option value=\"METANOL PARA CROMATOGRAFIA\" id=\"51\">METANOL PARA CROMATOGRAFIA</option>",
+  "<option value=\"METANOL PARA CROMATOGRAFIA EN FASE LIQUIDA\" id=\"52\">METANOL PARA CROMATOGRAFIA EN FASE LIQUIDA</option>",
+     "<option value=\"METANOL PARA CROMATOGRAFIA LICHROSOLV\" id=\"53\">METANOL PARA CROMATOGRAFIA LICHROSOLV</option>",
+    "<option value=\"METANOL SECADO\" id=\"54\">METANOL SECADO</option>",
+    "<option value=\"METILICO\" id=\"55\">METILICO</option>",
+    "<option value=\"METILICO ACS\" id=\"56\">METILICO ACS</option>",
+    "<option value=\"METILICO AR\" id=\"57\">METILICO AR</option>",
+    "<option value=\"METILICO HPLC\" id=\"58\">METILICO HPLC</option>",
+    "<option value=\"N-AMILICO\" id=\"59\">N-AMILICO</option>",
+    "<option value=\"N-AMILICO P.A\" id=\"60\">N-AMILICO P.A</option>",
+    "<option value=\"N-AMILICO P.S\" id=\"61\">N-AMILICO P.S</option>",
+    "<option value=\"N-BUTILICO\" id=\"62\">N-BUTILICO</option>",
+    "<option value=\"N-PROPANOL\" id=\"63\">N-PROPANOL</option>",
+    "<option value=\"N-PROPILICO\" id=\"64\">N-PROPILICO</option>",
+    "<option value=\"N1PENTANOL\" id=\"65\">N1PENTANOL</option>",
+    "<option value=\"NEUTRO\" id=\"66\">NEUTRO</option>",
+    "<option value=\"NEUTRO DESMETILIZADO\" id=\"67\">NEUTRO DESMETILIZADO</option>",
+    "<option value=\"OCTANOL\" id=\"68\">OCTANOL</option>",
+    "<option value=\"PENTANOL\" id=\"69\">PENTANOL</option>",
+    "<option value=\"POLIETILENGLICOL\" id=\"70\">POLIETILENGLICOL</option>",
+    "<option value=\"POLIVINILICO\" id=\"71\">POLIVINILICO</option>",
+    "<option value=\"PROLIETILENGLICOL 400\" id=\"72\">PROLIETILENGLICOL 400</option>",
+    "<option value=\"PROPANOL\" id=\"73\">PROPANOL</option>",
+    "<option value=\"PROPILENGLICOL\" id=\"74\">PROPILENGLICOL</option>",
+    "<option value=\"SECBUTILICO\" id=\"75\">SECBUTILICO</option>",
+    "<option value=\"SUNSOLVE ETANOL\" id=\"76\">SUNSOLVE ETANOL</option>",
+    "<option value=\"N-BUTILICO GRADO REACTIVO\" id=\"77\">N-BUTILICO GRADO REACTIVO</option>",
+    "<option value=\"SECBUTILICO GRADO REACTIVO\" id=\"78\">SECBUTILICO GRADO REACTIVO</option>",
+    "<option value=\"ETILICO ABSOLUTO GRADO REACTIVO\" id=\"79\">ETILICO ABSOLUTO GRADO REACTIVO</option>",   "<option value=\"ETILICO PURO USP\" id=\"80\">ETILICO PURO USP</option>",
+    "<option value=\"ISOPROPILICO CALIDAD INDUSTRIAL\" id=\"81\">ISOPROPILICO CALIDAD INDUSTRIAL</option>",
+    "<option value=\"PROPYL\" id=\"82\">PROPYL</option>",
+    "<option value=\"ISO-AMILICO\" id=\"83\">ISO-AMILICO</option>",
+    "<option value=\"ISOBUTILICO\" id=\"84\">ISOBUTILICO</option>",
+    "<option value=\"ETILICO 300 MATERIAL DE REFERENCIA\" id=\"85\">ETILICO 300 MATERIAL DE REFERENCIA</option>",
+    "<option value=\"ETILICO 400 MATERIAL DE REFERENCIA\" id=\"86\">ETILICO 400 MATERIAL DE REFERENCIA</option>",
+    "<option value=\"ETILICO 500 MATERIAL DE REFERENCIA\" id=\"87\">ETILICO 500 MATERIAL DE REFERENCIA</option>",
+
+
+"<option value=\"BENCILICO AR \" id=\"87.1\">BENCILICO AR </option>",
+
+"<option value=\"BENCILICO BIDESTILADO  \" id=\"87.2\"> BENCILICO BIDESTILADO </option>",
+
+
+"<option value=\"BENCILICO CLASE ESPECIAL  \" id=\"87.3\"> BENCILICO CLASE ESPECIAL  </option>",
+
+
+    "<option value=\"BUTILICO EMPROVE PLUS\" id=\"88\">BUTILICO EMPROVE PLUS</option>",
+"<option value=\"BENCILICO P.A \" id=\"89\"> BENCILICO P.A </option>",
+
+  "<option value=\"BENCILICO PURIS\" id=\"91\">BENCILICO PURIS</option>",
+  "<option value=\"BORO TRIFLOURURO METANOL\" id=\"92\">BORO TRIFLOURURO METANOL</option>",
+  "<option value=\"BUTANOL P.A\" id=\"93\">BUTANOL P.A</option>",
+  "<option value=\"BUTANOL-TERC\" id=\"94\">BUTANOL-TERC</option>",
+  "<option value=\"BUTILGLICOL\" id=\"95\">BUTILGLICOL</option>",
+  "<option value=\"BUTILICO\" id=\"96\">BUTILICO</option>",
+  "<option value=\"BUTILICO AR\" id=\"97\">BUTILICO AR</option>",
+  "<option value=\"CA.5503\" id=\"98\">CA.5503</option>",
+  "<option value=\"CETIL ESTEARILICO\" id=\"99\">CETIL ESTEARILICO</option>",
+  "<option value=\"CETILICO\" id=\"100\">CETILICO</option>",
+  "<option value=\"CETILICO ESTEARILICO\" id=\"101\">CETILICO ESTEARILICO</option>",
+  "<option value=\"CETILICO P.S\" id=\"102\">CETILICO P.S</option>",
+  "<option value=\"CETOESTEARILICO\" id=\"103\">CETOESTEARILICO</option>",
+  "<option value=\"CICLOHEXILMATANOL PARASINTESIS\" id=\"104\">CICLOHEXILMATANOL PARASINTESIS</option>",
+  "<option value=\"CICLOHEXILMETANOL\" id=\"105\">CICLOHEXILMETANOL</option>",
+  "<option value=\"COMBIMETANOL\" id=\"106\">COMBIMETANOL</option>",
+  "<option value=\"DESHIDRATADO\" id=\"107\">DESHIDRATADO</option>",
+  "<option value=\"DESNATURALIZADO CON ISOPROPILICO\" id=\"108\">DESNATURALIZADO CON ISOPROPILICO</option>",
+  "<option value=\"ESTEARILICO\" id=\"109\">ESTEARILICO</option>",
+  "<option value=\"ETANOL\" id=\"110\">ETANOL</option>",
+    "<option value=\"ETANOL ABSOLUTO\" id=\"111\">ETANOL ABSOLUTO</option>",
+  "<option value=\"ETANOL ABSOLUTO P.A\" id=\"112\">ETANOL ABSOLUTO P.A</option>",
+  "<option value=\"ETANOL ABSOLUTO P.AACS, ISO\" id=\"113\">ETANOL ABSOLUTO P.AACS, ISO</option>",
+  "<option value=\"ETANOL ABSOLUTO PARA USO COMO EXIPIENTE\" id=\"114\">ETANOL ABSOLUTO PARA USO COMO EXIPIENTE</option>",
+  "<option value=\"ETANOL DESNATURALIZADO\" id=\"115\">ETANOL DESNATURALIZADO</option>",
+  "<option value=\"ETANOL GRADIENT\" id=\"116\">ETANOL GRADIENT</option>",
+  "<option value=\"ETANOL HPLC\" id=\"117\">ETANOL HPLC</option>",
+  "<option value=\"ETANOL PHEUR\" id=\"118\">ETANOL PHEUR</option>",
+  "<option value=\"ETANOL PURIS\" id=\"119\">ETANOL PURIS</option>",
+  "<option value=\"ETANOL-100\" id=\"120\">ETANOL-100</option>",
+  "<option value=\"ETANOL-200\" id=\"121\">ETANOL-200</option>",
+  "<option value=\"TER-AMILICOEMPLURA\" id=\"122\">TER-AMILICOEMPLURA</option>",
+  "<option value=\"TER-BUTANOL\" id=\"123\">TER-BUTANOL</option>",
+  "<option value=\"TER-BUTILICO\" id=\"124\">TER-BUTILICO</option>",
+  "<option value=\"TERC-AMILICO EMPLURA\" id=\"125\">TERC-AMILICO EMPLURA</option>",
+  "<option value=\"TERC-BUTANOL\" id=\"126\">TERC-BUTANOL</option>",
+  "<option value=\"TERC-BUTANOL EMPLURA\" id=\"127\">TERC-BUTANOL EMPLURA</option>",
+  "<option value=\"TETRA-N-BUTILAMONIO\" id=\"128\">TETRA-N-BUTILAMONIO</option>",
+  "<option value=\"TETRA-N-BUTILAMONIOHIDROXIDOENSOL.2PROPANOL/METANOL\" id=\"129\">TETRA-N-BUTILAMONIOHIDROXIDOENSOL.2PROPANOL/METANOL</option>",
+  "<option value=\"TRIFENILMETANOL P.S\" id=\"130\">TRIFENILMETANOL P.S</option>",
+  "<option value=\"TRIFLORURO-METANOL\" id=\"131\">TRIFLORURO-METANOL</option>",
+  "<option value=\"ETANOL PURIS US\" id=\"132\">ETANOL PURIS US</option>",
+    "<option value=\"ETANOL DESNATURALIZADO CON ETILMETILCETONA P.A\" id=\"133\">ETANOL DESNATURALIZADO CON ETILMETILCETONA P.A</option>",
+
+  "<option value=\"2-PROPANOL SECADO SECCOSOLV\" id=\"134\">2-PROPANOL SECADO SECCOSOLV</option>",
+  "<option value=\"1-METOXI-2-PROPANOL\" id=\"135\">1-METOXI-2-PROPANOL</option>",
+  "<option value=\"1-PROPANOL EMPLURA\" id=\"136\">1-PROPANOL EMPLURA</option>",
+  "<option value=\"N-PROPILICO AR\" id=\"137\">N-PROPILICO AR</option>",
+  "<option value=\"1 OCTANOL AR\" id=\"138\">1 OCTANOL AR</option>",
+  "<option value=\"ESTEARILICO PERLAS/ESCAMAS\" id=\"139\">ESTEARILICO PERLAS/ESCAMAS</option>",
+  "<option value=\"ETILICO\" id=\"140\">ETILICO</option>",
+  "<option value=\"ISOAMILICO AR\" id=\"141\">ISOAMILICO AR</option>",
+  "<option value=\"BENCILICO\" id=\"142\">BENCILICO</option>",
+  "<option value=\"ETILICO POTABLE\" id=\"143\">ETILICO POTABLE</option>",
+  "<option value=\"ETILICO 100 MATERIAL DE REFERENCIA\" id=\"144\">ETILICO 100 MATERIAL DE REFERENCIA</option>",
+  "<option value=\"ETILICO 200 MATERIAL DE REFERENCIA\" id=\"145\">ETILICO 200 MATERIAL DE REFERENCIA</option>",
+  "<option value=\"PROPANOL P.A\" id=\"146\">PROPANOL P.A</option>",
+  "<option value=\"4-HIDRÓXI-4-METIL-2-PENTANONA PARA SÍNTESIS (ALCOHOL DIACETÓNICA)\" id=\"147\">4-HIDRÓXI-4-METIL-2-PENTANONA PARA SÍNTESIS (ALCOHOL DIACETÓNICA)</option>",
+  "<option value=\"ETILICO ANHIDRO RECTIFICADO\" id=\"148\">ETILICO ANHIDRO RECTIFICADO</option>",
+  "<option value=\"ETILICO NEUTRO CON ADITIVO GLICERINA\" id=\"149\">ETILICO NEUTRO CON ADITIVO GLICERINA</option>",
+  "<option value=\"ISOPROPILICO\" id=\"150\">ISOPROPILICO</option>",
+  "<option value=\"POLIETILENGLICOL CUATROCIENTOS\" id=\"151\">POLIETILENGLICOL CUATROCIENTOS</option>",
+  "<option value=\"POLIETILENGLICOL CUATRO MIL\" id=\"152\">POLIETILENGLICOL CUATRO MIL</option>",
+  "<option value=\"POLIETILENGLICOL SEIS MIL\" id=\"153\">POLIETILENGLICOL SEIS MIL</option>",
+  "<option value=\"LAURICO ETOXILADO\" id=\"154\">LAURICO ETOXILADO</option>",
+   "<option value=\"ETILICO DESNATURALIZADO CON DIETILFTALATO\" id=\"155\">ETILICO DESNATURALIZADO CON DIETILFTALATO</option>",
+  "<option value=\"ETILICO DESNATURALIZADO CON ISOPROPILICO\" id=\"156\">ETILICO DESNATURALIZADO CON ISOPROPILICO</option>",
+  "<option value=\"ETILICO DESHIDRATADO + N-PROPANOL\" id=\"157\">ETILICO DESHIDRATADO + N-PROPANOL</option>",
+  "<option value=\"ETILICO 10 (ETANOL 10) MATERIAL DE REFERENCIA\" id=\"158\">ETILICO 10 (ETANOL 10) MATERIAL DE REFERENCIA</option>",
+  "<option value=\"ETILICO 50 (ETANOL 50) MATERIAL DE REFERENCIA\" id=\"159\">ETILICO 50 (ETANOL 50) MATERIAL DE REFERENCIA</option>",
+  "<option value=\"ETILICO (ESTERES)\" id=\"160\">ETILICO (ESTERES)</option>",
+  "<option value=\"FENILETILICO USP\" id=\"161\">FENILETILICO USP</option>",
+  "<option value=\"1-PROPANOL P.A\" id=\"162\">1-PROPANOL P.A</option>",
+  "<option value=\"BUTANOL\" id=\"163\">BUTANOL</option>",
+  "<option value=\"CETEARILICO POLISORBATO 60\" id=\"164\">CETEARILICO POLISORBATO 60</option>",
+  "<option value=\"ETILICO ABSOLUTO P.A\" id=\"165\">ETILICO ABSOLUTO P.A</option>",
+  "<option value=\"ETILICO ANHIDRO NO POTABLE\" id=\"166\">ETILICO ANHIDRO NO POTABLE</option>",
+  "<option value=\"POLIVINILICO SELVOL 540\" id=\"167\">POLIVINILICO SELVOL 540</option>",
+  "<option value=\"METILICO P.A.\" id=\"168\">METILICO P.A.</option>",
+  "<option value=\"ISOPROPILICO P.A.\" id=\"169\">ISOPROPILICO P.A.</option>",
+  "<option value=\"ETILICO ABOSOLUTO-200\" id=\"170\">ETILICO ABOSOLUTO-200</option>",
+  "<option value=\"CA-5503-OXIDIETANOL\" id=\"171\">CA-5503-OXIDIETANOL</option>",
+  "<option value=\"ETILICO AR\" id=\"172\">ETILICO AR</option>",
+    "<option value=\"ETANOL-500\" id=\"173\">ETANOL-500</option>",
+  "<option value=\"ETILICO PURO\" id=\"174\">ETILICO PURO</option>",
+  "<option value=\"ETILICO 300 MATERIAL DE REFERENCIA\" id=\"175\">ETILICO 300 MATERIAL DE REFERENCIA</option>",
+  "<option value=\"ETILICO 400 MATERIAL DE REFERENCIA\" id=\"176\">ETILICO 400 MATERIAL DE REFERENCIA</option>",
+  "<option value=\"ETILICO 500 MATERIAL DE REFERENCIA\" id=\"177\">ETILICO 500 MATERIAL DE REFERENCIA</option>",
+  "<option value=\"ETILICO ABOSOLUTO-200\" id=\"178\">ETILICO ABOSOLUTO-200</option>",
+  "<option value=\"ETILICO ABSOLUTO\" id=\"179\">ETILICO ABSOLUTO</option>",
+  "<option value=\"ETILICO ABSOLUTO ACS\" id=\"180\">ETILICO ABSOLUTO ACS</option>",
+  "<option value=\"ETILICO ABSOLUTO DESHIDRATADO\" id=\"181\">ETILICO ABSOLUTO DESHIDRATADO</option>",
+  "<option value=\"ETILICO ANHIDRO\" id=\"182\">ETILICO ANHIDRO</option>",
+  "<option value=\"ETILICO AR\" id=\"183\">ETILICO AR</option>",
+  "<option value=\"ETILICO CALIDAD HISTOLOGICO\" id=\"184\">ETILICO CALIDAD HISTOLOGICO</option>",
+  "<option value=\"ETILICO CALIDAD HPLC\" id=\"185\">ETILICO CALIDAD HPLC</option>",
+  "<option value=\"ETILICO CON DESNATURALIZADO SOLV. HIDROCARBONO\" id=\"186\">ETILICO CON DESNATURALIZADO SOLV. HIDROCARBONO</option>",
+  "<option value=\"ETILICO DESHIDRATADO\" id=\"187\">ETILICO DESHIDRATADO</option>",
+  "<option value=\"ETILICO DESNATURALIZADO\" id=\"188\">ETILICO DESNATURALIZADO</option>",
+  "<option value=\"ETILICO DESNATURALIZADO CON BITREX\" id=\"189\">ETILICO DESNATURALIZADO CON BITREX</option>",
+  "<option value=\"ETILICO DESNATURALIZADO CON HIDROCARBON\" id=\"190\">ETILICO DESNATURALIZADO CON HIDROCARBON</option>",
+  "<option value=\"ETILICO DESNATURALIZADO CON ISOPROPANOL\" id=\"191\">ETILICO DESNATURALIZADO CON ISOPROPANOL</option>",
+  "<option value=\"ETILICO GRADO REACTIVO\" id=\"192\">ETILICO GRADO REACTIVO</option>",
+  "<option value=\"ETILICO GRASO ETOXILADO\" id=\"193\">ETILICO GRASO ETOXILADO</option>",
+  "<option value=\"ETILICO HIDRATADO\" id=\"194\">ETILICO HIDRATADO</option>",
+
+   "<option value=\"ETILICO HIDRATADO RECTIFICADO\" id=\"195\">ETILICO HIDRATADO RECTIFICADO</option>",
+  "<option value=\"ETILICO HPLC\" id=\"196\">ETILICO HPLC</option>",
+  "<option value=\"ETILICO INDUSTRIAL\" id=\"197\">ETILICO INDUSTRIAL</option>",
+  "<option value=\"ETILICO MATERIAL DE REFERENCIA\" id=\"198\">ETILICO MATERIAL DE REFERENCIA</option>",
+  "<option value=\"ETILICO MATERIAL DE REFERENCIA CERTIFICADO\" id=\"199\">ETILICO MATERIAL DE REFERENCIA CERTIFICADO</option>",
+  "<option value=\"ETILICO NEUTRO\" id=\"200\">ETILICO NEUTRO</option>",
+  "<option value=\"ETILICO NEUTRO A GRANEL\" id=\"201\">ETILICO NEUTRO A GRANEL</option>",
+  "<option value=\"ETILICO NEUTRO DESNATURALIZADO CON DIETILFTALATO\" id=\"202\">ETILICO NEUTRO DESNATURALIZADO CON DIETILFTALATO</option>",
+  "<option value=\"ETILICO PURO\" id=\"203\">ETILICO PURO</option>",
+  "<option value=\"ETILICO RECTIFICADO\" id=\"204\">ETILICO RECTIFICADO</option>",
+  "<option value=\"ETOXILADO\" id=\"205\">ETOXILADO</option>",
+  "<option value=\"ETOXILADO ISO\" id=\"206\">ETOXILADO ISO</option>",
+  "<option value=\"ETOXILADOBIO-SOFT-N91-6\" id=\"207\">ETOXILADOBIO-SOFT-N91-6</option>",
+  "<option value=\"FENILETANOL\" id=\"208\">FENILETANOL</option>",
+  "<option value=\"FENILETILICO\" id=\"209\">FENILETILICO</option>",
+  "<option value=\"FURFURILICO PARA SINTESIS\" id=\"210\">FURFURILICO PARA SINTESIS</option>",
+  "<option value=\"GLISEROL\" id=\"211\">GLISEROL</option>",
+  "<option value=\"HIDRATADO RECTIFICADO\" id=\"212\">HIDRATADO RECTIFICADO</option>",
+  "<option value=\"HOJAS (CIS-3-HEXENOL)\" id=\"213\">HOJAS (CIS-3-HEXENOL)</option>",
+  "<option value=\"ISOAMILICO\" id=\"214\">ISOAMILICO</option>",
+   "<option value=\"ISOAMILICO ACS\" id=\"215\">ISOAMILICO ACS</option>",
+  "<option value=\"ISOAMILICO P.A\" id=\"216\">ISOAMILICO P.A</option>",
+  "<option value=\"ISOAMILICO P.S\" id=\"217\">ISOAMILICO P.S</option>",
+  "<option value=\"ISOBUTANOL\" id=\"218\">ISOBUTANOL</option>",
+  "<option value=\"ISOBUTANOL P.A\" id=\"219\">ISOBUTANOL P.A</option>",
+  "<option value=\"ISOBUTILICO ACS\" id=\"220\">ISOBUTILICO ACS</option>",
+  "<option value=\"ISOBUTILICO AR\" id=\"221\">ISOBUTILICO AR</option>",
+  "<option value=\"ISOPROPANOL\" id=\"222\">ISOPROPANOL</option>",
+  "<option value=\"ISOPROPILICO (IPA)\" id=\"223\">ISOPROPILICO (IPA)</option>",
+  "<option value=\"ISOPROPILICO AR\" id=\"224\">ISOPROPILICO AR</option>",
+  "<option value=\"ISOPROPILICO GRADO INDUSTRIAL\" id=\"225\">ISOPROPILICO GRADO INDUSTRIAL</option>",
+  "<option value=\"ISOPROPILICO GRADO REACTIVO\" id=\"226\">ISOPROPILICO GRADO REACTIVO</option>",
+  "<option value=\"ISOPROPILICO HPLC\" id=\"227\">ISOPROPILICO HPLC</option>",
+  "<option value=\"ISOBUTYL\" id=\"228\">ISOBUTYL</option>",
+  "<option value=\"1-PENTANOL N-AMYL\" id=\"229\">1-PENTANOL N-AMYL</option>",
+  "<option value=\"N-PROPANOL 1 PROPANOL\" id=\"230\">N-PROPANOL 1 PROPANOL</option>",
+  "<option value=\"METILICO PURO\" id=\"231\">METILICO PURO</option>",
+  "<option value=\"ISOPROPILICO PURO\" id=\"232\">ISOPROPILICO PURO</option>",
+  "<option value=\"N-AMILICO GRADO REACTIVO\" id=\"233\">N-AMILICO GRADO REACTIVO</option>",
+  "<option value=\"ISOAMILICO GRADO REACTIVO\" id=\"234\">ISOAMILICO GRADO REACTIVO</option>",
+  "<option value=\"ISOBUTILICO GRADO REACTIVO\" id=\"235\">ISOBUTILICO GRADO REACTIVO</option>",
+  "<option value=\"BENCILICO GRADO REACTIVO\" id=\"236\">BENCILICO GRADO REACTIVO</option>",
+  "<option value=\"1-OCTANOL GRADO REACTIVO\" id=\"237\">1-OCTANOL GRADO REACTIVO</option>",
+    "<option value=\"ETILICO ABSOLUTO INDUSTRIAL\" id=\"238\">ETILICO ABSOLUTO INDUSTRIAL</option>",
+  "<option value=\"ETILICO ABSOLUTO GRADO INDUSTRIAL\" id=\"239\">ETILICO ABSOLUTO GRADO INDUSTRIAL</option>",
+  "<option value=\"METILICO GRADO REACTIVO\" id=\"240\">METILICO GRADO REACTIVO</option>",
+  "<option value=\"N-PROPILICO GRADO REACTIVO\" id=\"241\">N-PROPILICO GRADO REACTIVO</option>",
+  "<option value=\"N-AMYL\" id=\"242\">N-AMYL</option>",
+  "<option value=\"BUTAN-1-OL, N-BUTILICO\" id=\"243\">BUTAN-1-OL, N-BUTILICO</option>",
+  "<option value=\"ETANOL ABSOLUTO GRADO INYECTABLE\" id=\"244\">ETANOL ABSOLUTO GRADO INYECTABLE</option>",
+  "<option value=\"BENCILICO GRADO INYECTABLE\" id=\"245\">BENCILICO GRADO INYECTABLE</option>",
+  "<option value=\"TER-BUTILICO AR\" id=\"246\">TER-BUTILICO AR</option>",
+  "<option value=\"ALCOHOL ETANOL DESNATURALIZADO\" id=\"247\">ALCOHOL ETANOL DESNATURALIZADO</option>",
+  "<option value=\"ETANOL GRADIENT\" id=\"248\">ETANOL GRADIENT</option>",
+  "<option value=\"ETANOL HPLC\" id=\"249\">ETANOL HPLC</option>",
+  "<option value=\"ETANOL PHEUR\" id=\"250\">ETANOL PHEUR</option>",
+  "<option value=\"ETANOL PURIS\" id=\"251\">ETANOL PURIS</option>",
+  "<option value=\"ETANOL-100\" id=\"252\">ETANOL-100</option>",
+  "<option value=\"ETANOL-200\" id=\"253\">ETANOL-200</option>",
+  "<option value=\"ETANOL-300\" id=\"254\">ETANOL-300</option>",
+  "<option value=\"ETANOL-400\" id=\"255\">ETANOL-400</option>",
+  "<option value=\"ETANOL-500\" id=\"256\">ETANOL-500</option>"
+
+
+     );
+    
+    
+////////////////////////////////////////////////////////////////boton guardar o actualizar/////////////////////////////////////////////////////
+
+$('#agregar').on("click", function ()
+    {
+        if (nombre_nac.val()!="")
+        {
+            if ($("#tipotramite").val()!="Seleccione una opción")
+            {
+                if (volumen_nac.val()!="")
+                {
+                    if ($("#selectclasificacion").val()!="Seleccione una opción")
+                    {
+                        if (monto_nac.val()!="")
+                        {
+                            $("#productos > tbody").empty();
+                            $("#tituloEstablecimientos").prop("hidden",false);
+                            $("#establecimientos").prop("hidden",false);
+                                
+                            if(itemEditable!="")
+                            {
+                                index = datosTabla.indexOf(itemEditable);
+
+
+                                datosTabla[index][1] = $("#tipotramite").val();
+                                datosTabla[index][2] = $("#selectclasificacion").val();
+                                datosTabla[index][3] = nombre_nac.val();
+                         
+                                datosTabla[index][4] = volumen_nac.val();
+                          
+                                datosTabla[index][5] = monto_nac.val();
+                                
+                                datosTabla[index][6] = $("#selectipo").val();
+                               
+
+                                $('#tr'+index).prop("style","background:white");
+                            }else
+                            {
+                                datosTabla.push([
+                                    (datosTabla.length+1),
+                                    nombre_nac.val(),
+                                    $("#tipotramite").val(),
+                                    volumen_nac.val(),
+                                    $("#selectclasificacion").val(),
+                                    monto_nac.val(),
+                                     ]);
+                            }
+                            $("[name='datos_tabla2']").val("'" + JSON.stringify(datosTabla)+"'");
+                            ponernull();
+                            generarTabla();
+                        } else{
+                            funcionMensaje(5,"Debe seleccionar un monto");
+                        }
+                    } else{
+                        funcionMensaje(4,"Debe seleccionar una unidad de medida");
+                    }
+                }else{
+                    funcionMensaje(3,"Debe ingresar un volumen de producción");
+                }   
+            }else{
+                funcionMensaje(2,"Debe seleccionar el departamento al que pertenece");
+            }
+        } else{
+            funcionMensaje(1,"Debe ingresar nombre de la zona franca o DPA ");
+        }
+        
+        function remover1()
+        {
+            $("#alertae1").remove();
+        }
+        function remover2()
+        {
+            $("#alertae2").remove();
+        }
+        function remover3()
+        {
+            $("#alertae3").remove();
+        }
+        function remover4()
+        {
+            $("#alertae4").remove();
+        }
+        function remover5()
+        {
+            $("#alertae5").remove();
+        }
+        function funcionMensaje(numero,mensaje)
+        {
+            $("#dato_faltante_establecimiento").append(
+            "<div class=\"alert alert-danger alert-dismissible fade show\" id=\"alertae"+numero+"\" role=\"alert\">"+
+                "<b>"+mensaje+"</b>  <button type=\"button\" class=\"close\""+
+            " data-dismiss=\"alert\" aria-label=\"Close\"><span  aria-hidden=\"true\">×</span></button></div>"
+            );
+          
+            $('html, body').animate({
+
+            scrollTop: $('h1').offset().top
+
+                },50);
+
+            if(numero==1)
+            {
+                setTimeout(remover1, 10000);
+            }else if(numero==2)
+            {
+                setTimeout(remover2, 10000);
+            }else if(numero==3)
+            {
+                setTimeout(remover3, 10000);
+            }else if(numero==4)
+            {
+                setTimeout(remover4, 10000);
+            }else if(numero==5)
+            {
+                setTimeout(remover5, 10000);
+            }
+        }
+        itemEditable = "";
+    });
+
+   
+    //////////////////////////////////////////////////////Generar tabla////////////////////////////////////////////////////////////////////
+    function generarTabla()
+    {
+     if(datosTabla.length==0){ 
+            $("input[name='datos_tabla2']").val("");
+        }
+        $("#establecimientos > tbody").empty();
+        numeroTabla = 1;
+        for (i = 0; datosTabla.length > i; i++)
+    
+        {
+
+         
+            index = datosTabla.indexOf(datosTabla[i]);
+            $("#establecimientos tbody").append(
+
+   
+                "<tr id=\"tr"+index+"\">" +
+                    "<td style=\"width:5%\">" + numeroTabla + "</td>" +
+                    "<td style=\"width:25%\">" + datosTabla[i][1] + "</td>" +
+                    "<td style=\"width:15%\">" + datosTabla[i][2] + "</td>" +
+                    "<td style=\"width:15%\">" + datosTabla[i][3] + "</td>" +
+                    "<td style=\"width:15%\">" + datosTabla[i][4] + "</td>" +
+                    "<td style=\"width:15%\">" + datosTabla[i][5] + "</td>" +
+                    "<td style=\"width:15%\">" + datosTabla[i][6] + "</td>" +
+                    "<td style=\"width:10%\"><button type=\"button\" class=\"btn btn-secondary\" onclick=\"addDeleteIcon("+index+")\">Borrar</button><br><br>" +
+                    "<button type=\"button\" class=\"btn btn-secondary\" onclick=\"addEditIcon("+index+")\">Editar</button></td>" +
+                "</tr>"
+            );
+            numeroTabla++;
+        }
+    }
+    ////////////////////////////////////////////////////////////boton editar//////////////////////////////////////////////////////////
+    function addEditIcon(rowNumber)
+    {
+        datosTabla = JSON.parse((document.getElementsByName("datos_tabla2")[0].value).slice(1,-1));
+        $("#alertaI").remove();
+        $('html, body').animate({
+            scrollTop: $('#b1').offset().top
+         },50);
+           
+         $("#dato_faltante_establecimiento").append(
+            "<div class=\"alert alert-danger alert-dismissible fade show\" id=\"alertaI\" role=\"alert\">"+
+            "<b>Puede editar los campos, una ves terminado  por favor dar clic al botón actualizar</b>  <button type=\"button\" class=\"close\""+
+            " data-dismiss=\"alert\" aria-label=\"Close\"><span  aria-hidden=\"true\">×</span></button></div>");
+
+        for(i=0; i<=30; i++)
+        {
+            $('#tr'+i).prop("style","background: #");
+        }
+        $('#tr'+rowNumber).prop("style","background: #BFCDEE");
+        setTimeout( removAlert, 6000);
+        ponernull();
+
+        datoElegido = datosTabla[rowNumber];
+        itemEditable = datoElegido;
+        nombre_nac.val(datoElegido[1]);
+        $("#tipotramite").val(datoElegido[2]);
+        volumen_nac.val(datoElegido[3]);
+        $("#selectclasificacion").val(datoElegido[4]);
+        monto_nac.val(datoElegido[5]);
+
+        
+        document.getElementById("agregar").textContent="Actualizar";
+    }
+    ///////////////////////////////////////////////////////// alerta de edicion////////////////////////////////////////////////////
+    function removAlert(){
+        $("#alertaI").remove()
+    }
+    /////////////////////////////////////////////////////boton BORRAR //////////////////////////////////////////////////////////
+    function addDeleteIcon(rowNumber)
+    {
+        var respuesta=confirm("¿Desea borrar el ítem?");
+        if (respuesta==true)
+        {
+            datosTabla = JSON.parse((document.getElementsByName("datos_tabla2")[0].value).slice(1,-1));
+            datoElegido = datosTabla[rowNumber];
+            
+            indexPE = datosTabla.indexOf(datoElegido);
+            datosTabla.splice(indexPE,1);
+            $("[name='datos_tabla2']").val("'" + JSON.stringify(datosTabla)+"'");
+            
+            generarTabla();
+            ponernull();
+            document.getElementById("agregar").textContent="Guardar";
+            
+            itemEditable = "";
+        }else{
+            //alert("cancelado");
+        }
+    }
+    ////////////////////////////////////////////////////ponr null las variables//////////////////////////
+    function ponernull()
+    {
+        nombre_nac.val("");
+        $("#tipotramite").val("Seleccione una opción");
+        volumen_nac.val("");
+        $("#selectclasificacion").val("Seleccione una opción");
+        monto_nac.val("");
+      
+    }
+</script>
